@@ -32,10 +32,13 @@ function! s:ViewToggle() abort
 		setlocal nonumber buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap
 					\ modifiable statusline=>\ Terslation nocursorline nofoldenable
 					\ norelativenumber
-		noremap <ESC> :TerslationToggle<CR>
+		call append(0, '[Terslation]')
+		call append(1, 'Enter the text: ')
+		call cursor(2, 0)
+		nnoremap <buffer> <ESC> :TerslationToggle<CR>
+		startinsert
 	else
 		silent! execute "bd ".s:viewBuf
 		unlet s:viewBuf
-		unmap <ESC>
 	endif
 endfunction " }}}
