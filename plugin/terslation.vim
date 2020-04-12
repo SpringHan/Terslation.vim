@@ -33,10 +33,12 @@ function! s:ViewToggle() abort
 					\ modifiable statusline=>\ Terslation nocursorline nofoldenable
 					\ norelativenumber
 		call append(0, '[Terslation]')
-		call append(1, 'Enter the text: ')
-		call cursor(2, 0)
+		call append(1, '')
+		call append(2, !exists('g:TerslationLang') || g:TerslationLang ==# 'en'?
+					\ 'Enter the text: ':'输入需要翻译的文本: ')
+		call cursor(3, 0)
 		nnoremap <buffer> <ESC> :TerslationToggle<CR>
-		startinsert
+		startinsert!
 	else
 		silent! execute "bd ".s:viewBuf
 		unlet s:viewBuf
