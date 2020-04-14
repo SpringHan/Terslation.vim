@@ -1,6 +1,6 @@
 " Terminal Translator interface for vim.
-" Authors: SpringHan <springhan@qq.com> && Gnglas <2254228017@qq.com>
-" Last Change: <+++>
+" Authors: SpringHan <springhan@qq.com> && Gnglas <2254228017@qq.com>(Terslation)
+" Last Change: 2020.4.14
 " Version: 1.0.0
 " Repository: https://github.com/SpringHan/Terslation.vim
 " Lisence: MIT
@@ -13,7 +13,10 @@ let g:TerslationLoaded = 1
 " }}}
 
 " Commands {{{
-command! -nargs=0 TerslationToggle call s:ViewToggle()
+command! -nargs=? TerslationToggle call s:viewToggle(<q-args>)
+command! -nargs=0 TerslationTrans call s:translate()
+command! -nargs=0 TerslationYank call s:resultYank()
+command! -nargs=0 TerslationWordTrans call s:wordTranslate()
 " }}}
 
 " FUNCTION: s:HighLightSet() {{{
@@ -25,7 +28,7 @@ function! s:HighLightSet() abort
 	else
 		syntax match TerslationAheadHL /^输入需要翻译的文本/
 	endif
-	syntax match TerslationContextHL /\(Enter\sthe\stext:\|输入需要翻译的文本:\)\@<=\s\(.*\)/
+	syntax match TerslationContextHL /\(Enter\sthe\stext:\s\|输入需要翻译的文本:\s\)\@<=\(.*\)/
 	if !exists('g:TerslationDefaultSyntax') || g:TerslationDefaultSyntax == 1
 		highlight TerslationTitle ctermfg=167 guifg=#fb4934
 		highlight TerslationAhead cterm=bold ctermfg=142 gui=bold guifg=#98C379
@@ -36,8 +39,16 @@ function! s:HighLightSet() abort
 	highlight link TerslationContextHL TerslationContext
 endfunction " }}}
 
-" Function: s:ViewToggle() {{{
-function! s:ViewToggle() abort
+" Function: s:viewToggle(...) {{{
+function! s:viewToggle(...) abort
+	if exists('a:1') && a:1 == 1 "Refresh the interactive panel
+		call deletebufline(s:viewBuf, 4, 5)
+		call setline(3, !exists('g:TerslationLang') || g:TerslationLang ==# 'en'?
+					\ 'Enter the text: ':'输入需要翻译的文本: ')
+		call cursor(3, 0)
+		startinsert!
+		return
+	endif
 	if !exists('s:viewBuf')
 		if !exists('g:TerslationPosition') && !exists('g:TerslationWidth')
 			silent execute "vertical botright 50new"
@@ -54,16 +65,55 @@ function! s:ViewToggle() abort
 					\ norelativenumber
 		call setline(1, '[Terslation]')
 		call setline(2, '')
-		call setline(3, !exists('g:TerslationLang') || g:TerslationLang ==# 'en'?
-					\ 'Enter the text: ':'输入需要翻译的文本: ')
-		call cursor(3, 0)
+		if exists('a:1') && a:1 != '' && a:1 != 1
+			call setline(3, !exists('g:TerslationLang') || g:TerslationLang ==# 'en'?
+						\ 'Enter the text: '.a:1 : '输入需要翻译的文本: '.a:1)
+			call s:translate()
+		else
+			call setline(3, !exists('g:TerslationLang') || g:TerslationLang ==# 'en'?
+						\ 'Enter the text: ':'输入需要翻译的文本: ')
+			call cursor(3, 0)
+			startinsert!
+		endif
 		call s:HighLightSet()
 		nnoremap <buffer><silent> <ESC> :TerslationToggle<CR>
+		nnoremap <buffer><silent> <CR> :TerslationYank<CR>
+		nnoremap <buffer><silent> i :TerslationToggle 1<CR>
 		inoremap <buffer><silent> <ESC> <ESC>:TerslationToggle<CR>
-		inoremap <buffer><silent> <CR> :call Terslation#translate()<CR>
-		startinsert!
+		inoremap <buffer><silent> <CR> <ESC>:TerslationTrans<CR>
 	else
 		silent! execute "bd ".s:viewBuf
 		unlet s:viewBuf
 	endif
+endfunction " }}}
+
+" FUNCTION: translate() {{{
+function! s:translate() abort
+	let s:translateContext = matchstr(getline(3),
+				\ '\(Enter\sthe\stext:\s\|输入需要翻译的文本:\s\)\@<=\(.*\)')
+	call setline(4, '')
+	call cursor(4, 0)
+	call writefile([s:translateContext], '/usr/local/src/fanyi/.fanyi.txt', 'b')
+	silent execute 'read !python3 /usr/local/src/fanyi/fanyi.py'
+	unlet s:translateContext
+endfunction " }}}
+
+" FUNCTION: s:resultYank() {{{
+function! s:resultYank() abort
+	let l:transResult = getline(5)
+	if l:transResult == ''
+		echohl Error | echom '[Terslation.vim]: There are no translation result!'
+		echohl None
+	endif
+	call setreg(!exists('g:TerslationYank') || g:TerslationYank == 't'?'t':
+				\ g:TerslationYank, l:transResult, '"')
+	unlet l:transResult
+	call s:viewToggle()
+endfunction " }}}
+
+" FUNCTION: s:wordTranslate() {{{
+function! s:wordTranslate() abort
+	let l:transWord = expand('<cword>')
+	call s:viewToggle(l:transWord)
+	unlet l:transWord
 endfunction " }}}

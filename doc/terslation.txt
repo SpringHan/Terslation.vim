@@ -1,0 +1,83 @@
+*terslation*				Terminal Translator interface for vim.
+
+Version: 1.0.0
+Author: SpringHan <springhan@qq.com>
+Lisence: MIT
+
+Before use it,you must install the |Terslation|.There is a way:
+	Plug 'denstiny/Terslation' " Install with vim-plug
+Then,you can get to the |Terslation| directory and run 'sudo make install'
+
+==============================================================================
+CONTENTS						*terslation-contents*
+
+Introduction					|terslation-introduction|
+DefaultKeys					|terslation-defaultkeys|
+Configuration					|terslation-configuration|
+Command						|terslation-command|
+
+==============================================================================
+INTRODUCTION						*terslation-introduction*
+
+Terslation.vim is the Terminal Translator's interface for vim.You can use
+Terslation comfortable by Terslation.vim.
+
+==============================================================================
+DEFAULTKEYS						*terslation-defaultkeys*
+
+These keys will only take effect after opened interface.
+
+Keys in normal mode:
+
+|<ESC>|		Close the interface
+|i|		Refresh the interface
+|<CR>|		Copy the translation result
+
+Keys in insert mode:
+
+|<ESC>|		Close the interface
+|<CR>|		Translate the text you input
+
+==============================================================================
+CONFIGURATION						*terslation-configuration*
+
+*g:TerslationWidth* {value}(Default: `50`)
+Set the interface's width.
+{value} must be a `Number`.
+
+*g:TerslationPosition* {value}(Default: 'botright')
+Set the interface's position.
+{value} can be 'botright' or 'topleft'.
+
+*g:TerslationLang* {value}(Default: 'en')
+Set the clues language on the interface.
+{value} can be 'en' or 'cn'.
+
+*g:TerslationDefaultSyntax* {value}(Default: `1`)
+Use the default syntax of the interface.
+{value} can be `0` or `1`.
+If it is `0`,you should set |TerslationTitle|,|TerslationAhead| and
+|TerslationContext| by yourself.
+e.g.:
+	highlight TerslationTitle ctermfg=167 guifg=#fb4934
+	highlight TerslationAhead cterm=bold ctermfg=142 gui=bold guifg=#98C379
+	highlight TerslationContext ctermfg=214 guifg=#fabd2f
+
+*g:TerslationYank* {value}(Default: 't')
+Set the name of the register which replicate the translation result.
+{value} must be a `char`.(Not a string!)
+You can map a key for making it more convenient to paste the result.
+e.g.:
+	nnoremap <silent><leader>tp "tp
+
+==============================================================================
+COMMAND							*terslation-command*
+
+*:TerslationToggle*
+Show or close the interface.
+
+*:TerslationWordTrans*
+Translate the word under the cursor.
+
+==============================================================================
+vim:tw=80:nosta:noet:sw=4:ts=8:sts=0:ft=help:fen:fdm=marker

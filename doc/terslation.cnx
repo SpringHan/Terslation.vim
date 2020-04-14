@@ -1,0 +1,83 @@
+*terslation*						Vim下终端翻译器的交互界面
+
+版本: 1.0.0
+作者: SpringHan <springhan@qq.com>
+证书: MIT
+
+在使用之前，你必须安装|Terslation|。这里有一种方法：
+	Plug 'denstiny/Terslation' " 使用vim-plug安装
+在安装完成之后，到|Terslation|的目录下运行'sudo make install'即可。
+
+==============================================================================
+内容							*terslation-contents*
+
+Introduction					|terslation-introduction|
+DefaultKeys					|terslation-defaultkeys|
+Configuration					|terslation-configuration|
+Command						|terslation-command|
+
+==============================================================================
+简介							*terslation-introduction*
+
+Terslation.vim是终端翻译器的Vim交互界面。你可以通过它来使Terslation用得更舒服。
+
+==============================================================================
+默认快捷键						*terslation-defaultkeys*
+
+这些快捷键只有在打开了交互界面后才会生效。
+
+普通模式的快捷键:
+
+|<ESC>|		关闭交互界面
+|i|		刷新交互界面
+|<CR>|		复制翻译结果
+
+插入模式的快捷键:
+
+|<ESC>|		关闭交互界面
+|<CR>|		翻译你输入的文本
+
+==============================================================================
+配置							*terslation-configuration*
+
+*g:TerslationWidth* {value}(默认: `50`)
+设置交互界面的宽度。
+{value} 必须是`数值`.
+
+*g:TerslationPosition* {value}(默认: 'botright')
+设置交互界面的位置。
+{value} 可以设置为 'botright' 或者 'topleft'.
+
+*g:TerslationLang* {value}(默认: 'en')
+设置交互页面提示语的语言。
+{value} 可以设置为 'en' 或者 'cn'.
+
+*g:TerslationDefaultSyntax* {value}(默认: `1`)
+交互界面使用默认的高亮。
+{value} 可以设置为 `0` 或者 `1`.
+如果被设置为`0`，你需要设置|TerslationTitle|,|TerslationAhead|和
+|TerslationContext|的高亮。
+示例:
+	highlight TerslationTitle ctermfg=167 guifg=#fb4934
+	highlight TerslationAhead cterm=bold ctermfg=142 gui=bold guifg=#98C379
+	highlight TerslationContext ctermfg=214 guifg=#fabd2f
+
+*g:TerslationYank* {value}(默认: 't')
+设置复制翻译结果的寄存器的名称。
+{value} 必须是`字符`.(不是字符串!)
+你可以添加一个快捷键来更方便地粘贴翻译结果。
+You can map a key for making it more convenient to paste the result.
+示例:
+	nnoremap <silent><leader>tp "tp
+
+==============================================================================
+命令							*terslation-command*
+
+*:TerslationToggle*
+显示或者关闭交互面板。
+
+*:TerslationWordTrans*
+翻译光标下的单词。
+
+==============================================================================
+vim:tw=80:nosta:noet:sw=4:ts=8:sts=0:ft=help:fen:fdm=marker
