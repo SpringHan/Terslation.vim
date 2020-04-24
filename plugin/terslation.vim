@@ -1,5 +1,5 @@
 " Terminal Translator interface for vim.
-" Authors: SpringHan <springhan@qq.com> && Gnglas <2254228017@qq.com>(Terslation)
+" Authors: SpringHan <springchohaku@qq.com> && Gnglas <2254228017@qq.com>(Terslation)
 " Last Change: 2020.4.14
 " Version: 1.0.0
 " Repository: https://github.com/SpringHan/Terslation.vim
