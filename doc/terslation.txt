@@ -1,7 +1,7 @@
 *terslation*				Terminal Translator interface for vim.
 
-Version: 1.0.0
-Author: SpringHan <springhan@qq.com>
+Version: 1.0.1
+Author: SpringHan <springchohaku@qq.com>
 Lisence: MIT
 
 Before use it,you must install the |Terslation|.There is a way:
@@ -52,6 +52,11 @@ Set the interface's position.
 *g:TerslationLang* {value}(Default: 'en')
 Set the clues language on the interface.
 {value} can be 'en' or 'cn'.
+
+*g:TerslationFloatWin* {value}(Default: `0`)
+Show the word translation by floating window.
+{value} can be `0` or `1`. (Note: This function depends on |NeoVim| that has
+floating window.)
 
 *g:TerslationDefaultSyntax* {value}(Default: `1`)
 Use the default syntax of the interface.

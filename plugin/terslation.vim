@@ -1,7 +1,7 @@
 " Terminal Translator interface for vim.
 " Authors: SpringHan <springchohaku@qq.com> && Gnglas <2254228017@qq.com>(Terslation)
-" Last Change: 2020.4.14
-" Version: 1.0.0
+" Last Change: 2020.4.30
+" Version: 1.0.1
 " Repository: https://github.com/SpringHan/Terslation.vim
 " Lisence: MIT
 
@@ -19,9 +19,8 @@ command! -nargs=0 TerslationYank call s:resultYank()
 command! -nargs=0 TerslationWordTrans call s:wordTranslate()
 " }}}
 
-" FUNCTION: s:HighLightSet() {{{
-function! s:HighLightSet() abort
-	syntax clear
+" FUNCTION: s:HighLightSet(...) {{{
+function! s:HighLightSet(...) abort
 	syntax match TerslationTitleHL /^\[Terslation\]/
 	if !exists('g:TerslationLang') || g:TerslationLang ==# 'en'
 		syntax match TerslationAheadHL /^Enter\sthe\stext/
@@ -89,13 +88,13 @@ endfunction " }}}
 
 " FUNCTION: translate() {{{
 function! s:translate() abort
-	let s:translateContext = matchstr(getline(3),
+	let l:translateContext = matchstr(getline(3),
 				\ '\(Enter\sthe\stext:\s\|输入需要翻译的文本:\s\)\@<=\(.*\)')
 	call setline(4, '')
-	call cursor(4, 0)
-	call writefile([s:translateContext], '/usr/local/src/fanyi/.fanyi.txt', 'b')
-	silent execute 'read !python3 /usr/local/src/fanyi/fanyi.py'
-	unlet s:translateContext
+	call writefile([l:translateContext], '/usr/local/src/fanyi/.fanyi.txt', 'b')
+	call setline(5, trim(system('python3 /usr/local/src/fanyi/fanyi.py')))
+	call cursor(5, 1)
+	unlet l:translateContext
 endfunction " }}}
 
 " FUNCTION: s:resultYank() {{{
@@ -111,9 +110,34 @@ function! s:resultYank() abort
 	call s:viewToggle()
 endfunction " }}}
 
+" FUNCTION: s:transFloatWin(transWord) {{{
+function! s:transFloatWin(transWord) abort
+	let l:floatBuf = nvim_create_buf(v:false, v:true)
+	let l:transResult = trim(system('terlat '.a:transWord))
+	let l:width = strlen(l:transResult) <= 12 ? 14 : strlen(l:transResult)+2
+	let l:opt = { 'relative': 'cursor', 'width': l:width,
+				\ 'height': 3, 'anchor': 'NW', 'col': 1, 'row': 1, }
+	let l:window = nvim_open_win(l:floatBuf, v:false, l:opt)
+	let l:context = [ '[Terslation]', '', l:transResult, ]
+	call nvim_buf_set_lines(l:floatBuf, 0, 3, v:false, l:context)
+	call nvim_win_set_option(l:window, 'number', v:false)
+	call nvim_win_set_option(l:window, 'relativenumber', v:false)
+	call nvim_buf_set_option(l:floatBuf, 'buftype', 'nofile')
+	call s:HighLightSet(0)
+	call nvim_buf_add_highlight(l:floatBuf, -1, 'TerslationTitle' , 0, 0, -1)
+	call nvim_buf_add_highlight(l:floatBuf, -1, 'TerslationContext', 2, 0, -1)
+	let g:TerslationFloatBuf = l:floatBuf
+	unlet l:floatBuf l:transResult l:width l:opt l:window l:context
+	autocmd CursorMoved * ++once execute "bd ".g:TerslationFloatBuf." | unlet g:TerslationFloatBuf"
+endfunction " }}}
+
 " FUNCTION: s:wordTranslate() {{{
 function! s:wordTranslate() abort
 	let l:transWord = expand('<cword>')
-	call s:viewToggle(l:transWord)
+	if !exists('g:TerslationFloatWin') || g:TerslationFloatWin == 0
+		call s:viewToggle(l:transWord)
+	else
+		call s:transFloatWin(l:transWord)
+	endif
 	unlet l:transWord
 endfunction " }}}

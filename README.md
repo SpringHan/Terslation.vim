@@ -7,6 +7,7 @@
 ### ScreenShot
 
 ![The photo failed](./demo.png)
+![The photo failed](./demo1.png)
 
 ### Intro
 

@@ -1,7 +1,7 @@
 *terslation*						Vim下终端翻译器的交互界面
 
-版本: 1.0.0
-作者: SpringHan <springhan@qq.com>
+版本: 1.0.1
+作者: SpringHan <springchohaku@qq.com>
 证书: MIT
 
 在使用之前，你必须安装|Terslation|。这里有一种方法：
@@ -51,6 +51,10 @@ Terslation.vim是终端翻译器的Vim交互界面。你可以通过它来使Ter
 *g:TerslationLang* {value}(默认: 'en')
 设置交互页面提示语的语言。
 {value} 可以设置为 'en' 或者 'cn'.
+
+*g:TerslationFloatWin* {value}(默认: `0`)
+以浮动窗口的形式显示单词翻译结果。
+{value} 可以设置为 `0` 或者 `1`. (Note: 这个功能依赖拥有浮动窗口功能的|NeoVim|)
 
 *g:TerslationDefaultSyntax* {value}(默认: `1`)
 交互界面使用默认的高亮。

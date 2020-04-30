@@ -7,6 +7,7 @@
 ### 截图
 
 ![The photo failed](./demo.png)
+![The photo failed](./demo1.png)
 
 ### 简介
 
