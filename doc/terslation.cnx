@@ -11,10 +11,10 @@
 ==============================================================================
 内容							*terslation-contents*
 
-Introduction					|terslation-introduction|
-DefaultKeys					|terslation-defaultkeys|
-Configuration					|terslation-configuration|
-Command						|terslation-command|
+简介						|terslation-introduction|
+默认快捷键					|terslation-defaultkeys|
+配置						|terslation-configuration|
+命令						|terslation-command|
 
 ==============================================================================
 简介							*terslation-introduction*
@@ -70,7 +70,6 @@ Terslation.vim是终端翻译器的Vim交互界面。你可以通过它来使Ter
 设置复制翻译结果的寄存器的名称。
 {value} 必须是`字符`.(不是字符串!)
 你可以添加一个快捷键来更方便地粘贴翻译结果。
-You can map a key for making it more convenient to paste the result.
 示例:
 	nnoremap <silent><leader>tp "tp
 
