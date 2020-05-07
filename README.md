@@ -27,7 +27,7 @@ Then,you need to go to the `Terslation`'s directory and run `sudo make install`.
 
 ### Usage
 
-To get the help,you can run `:help terslation` in vim.Or if you are Chinese,you can run `:help terslation@cn` in vim.
+To get the help,you can run `:help terslation` in vim,or if you can run `:help terslation@cn` to get the Chinese doc.
 
 ## License
 MIT

@@ -27,7 +27,7 @@ Plug 'SpringHan/Terslation.vim'
 
 ### 用法
 
-你可以通过在Vim运行`:help terslation`来获取帮助。或者如果你是中国人，你可以运行`:help terslation@cn`来获取中文文档。
+你可以通过在Vim运行`:help terslation`来获取帮助，或者运行`:help terslation@cn`来获取中文文档。
 
 ## 证书
 MIT
