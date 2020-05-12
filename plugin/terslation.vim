@@ -128,7 +128,8 @@ function! s:transFloatWin(transWord) abort
 	call nvim_buf_add_highlight(l:floatBuf, -1, 'TerslationContext', 2, 0, -1)
 	let g:TerslationFloatBuf = l:floatBuf
 	unlet l:floatBuf l:transResult l:width l:opt l:window l:context
-	autocmd CursorMoved * ++once execute "bd ".g:TerslationFloatBuf." | unlet g:TerslationFloatBuf"
+	autocmd CursorMoved,CursorMovedI * ++once silent! execute "bd ".g:TerslationFloatBuf.
+				\ " | unlet g:TerslationFloatBuf"
 endfunction " }}}
 
 " FUNCTION: s:wordTranslate() {{{
