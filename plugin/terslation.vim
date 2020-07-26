@@ -150,6 +150,7 @@ function! s:OtherTranslate(type) abort
 		let l:linesCont[-1] = l:linesCont[-1][ : l:endCol - ( &selection ==
 					\ 'inclusive' ? 1 : 2 ) ]
 		let l:linesCont[0] = l:linesCont[0][ l:startCol - 1 : ]
+		let l:linesCont[0] = substitute(l:linesCont[0], '\(.*\)\@<=\`', '', 'g')
 		let l:transWord = l:linesCont[0]
 		unlet l:linesCont l:startLine l:startCol l:endLine l:endCol
 	else
