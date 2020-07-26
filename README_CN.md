@@ -6,8 +6,9 @@
 
 ### 截图
 
-![The photo failed](./demo.png)
-![The photo failed](./demo1.png)
+![图片加载失败](./demo.png)
+![图片加载失败](./demo1.png)
+![图片加载失败](./demo2.png)
 
 ### 简介
 

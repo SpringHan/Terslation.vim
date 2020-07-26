@@ -1,7 +1,7 @@
 " Terminal Translator interface for vim.
-" Authors: SpringHan <springchohaku@qq.com> && Gnglas <2254228017@qq.com>(Terslation)
-" Last Change: 2020.4.30
-" Version: 1.0.1
+" Authors: SpringHan <springchohaku@qq.com> && Gnglas <2254228017@qq.com> for Terslation
+" Last Change: 2020.7.26
+" Version: 1.0.2
 " Repository: https://github.com/SpringHan/Terslation.vim
 " Lisence: MIT
 
@@ -16,7 +16,8 @@ let g:TerslationLoaded = 1
 command! -nargs=? TerslationToggle call s:viewToggle(<q-args>)
 command! -nargs=0 TerslationTrans call s:translate()
 command! -nargs=0 TerslationYank call s:resultYank()
-command! -nargs=0 TerslationWordTrans call s:wordTranslate()
+command! -nargs=0 TerslationWordTrans call s:OtherTranslate(0)
+command! -nargs=0 -range TerslationSelectTrans call s:OtherTranslate(1)
 " }}}
 
 " FUNCTION: s:HighLightSet(...) {{{
@@ -91,8 +92,7 @@ function! s:translate() abort
 	let l:translateContext = matchstr(getline(3),
 				\ '\(Enter\sthe\stext:\s\|输入需要翻译的文本:\s\)\@<=\(.*\)')
 	call setline(4, '')
-	call writefile([l:translateContext], '/usr/local/src/fanyi/.fanyi.txt', 'b')
-	call setline(5, trim(system('python3 /usr/local/src/fanyi/fanyi.py')))
+	call setline(5, trim(system('terlat ' . '"' . l:translateContext . '"')))
 	call cursor(5, 1)
 	unlet l:translateContext
 endfunction " }}}
@@ -104,21 +104,22 @@ function! s:resultYank() abort
 		echohl Error | echom '[Terslation.vim]: There are no translation result!'
 		echohl None
 	endif
-	call setreg(!exists('g:TerslationYank') || g:TerslationYank == 't'?'t':
+	call setreg(!exists('g:TerslationYank') || g:TerslationYank == 't' ? 't':
 				\ g:TerslationYank, l:transResult, '"')
 	unlet l:transResult
 	call s:viewToggle()
 endfunction " }}}
 
-" FUNCTION: s:transFloatWin(transWord) {{{
-function! s:transFloatWin(transWord) abort
+" FUNCTION: s:transFloatWin(transWord, ...) {{{
+function! s:transFloatWin(transWord, ...) abort
 	let l:floatBuf = nvim_create_buf(v:false, v:true)
-	let l:transResult = trim(system('terlat '.a:transWord))
-	let l:width = strlen(l:transResult) <= 12 ? 14 : strlen(l:transResult)+2
+	let l:transResult = trim(system('terlat ' . '"' . a:transWord . '"'))
+	let l:width = strlen(l:transResult) <= 12 ? 14 : strlen(l:transResult) + 2
 	let l:opt = { 'relative': 'cursor', 'width': l:width,
 				\ 'height': 3, 'anchor': 'NW', 'col': 1, 'row': 1, }
 	let l:window = nvim_open_win(l:floatBuf, v:false, l:opt)
 	let l:context = [ '[Terslation]', '', l:transResult, ]
+
 	call nvim_buf_set_lines(l:floatBuf, 0, 3, v:false, l:context)
 	call nvim_win_set_option(l:window, 'number', v:false)
 	call nvim_win_set_option(l:window, 'relativenumber', v:false)
@@ -126,19 +127,40 @@ function! s:transFloatWin(transWord) abort
 	call s:HighLightSet(0)
 	call nvim_buf_add_highlight(l:floatBuf, -1, 'TerslationTitle' , 0, 0, -1)
 	call nvim_buf_add_highlight(l:floatBuf, -1, 'TerslationContext', 2, 0, -1)
+
 	let g:TerslationFloatBuf = l:floatBuf
 	unlet l:floatBuf l:transResult l:width l:opt l:window l:context
-	autocmd CursorMoved,CursorMovedI * ++once silent! execute "bd ".g:TerslationFloatBuf.
-				\ " | unlet g:TerslationFloatBuf"
+	if len(a:000) == 1
+		silent execute "normal gv"
+	endif
+	autocmd CursorMoved,CursorMovedI * ++once silent! execute "bd " .
+				\ g:TerslationFloatBuf . " | unlet g:TerslationFloatBuf"
 endfunction " }}}
 
-" FUNCTION: s:wordTranslate() {{{
-function! s:wordTranslate() abort
-	let l:transWord = expand('<cword>')
+" FUNCTION: s:OtherTranslate(type) {{{
+function! s:OtherTranslate(type) abort
+	if a:type != 0 && a:type != 1
+		return
+	endif
+
+	if a:type == 1
+		let [ l:startLine, l:startCol ] = getpos("'<")[ 1 : 2 ]
+		let [ l:endLine, l:endCol ] = getpos("'>")[ 1 : 2 ]
+		let l:linesCont = getline(l:startLine, l:endLine)
+		let l:linesCont[-1] = l:linesCont[-1][ : l:endCol - ( &selection ==
+					\ 'inclusive' ? 1 : 2 ) ]
+		let l:linesCont[0] = l:linesCont[0][ l:startCol - 1 : ]
+		let l:transWord = l:linesCont[0]
+		unlet l:linesCont l:startLine l:startCol l:endLine l:endCol
+	else
+		let l:transWord = expand('<cword>')
+	endif
+
 	if !exists('g:TerslationFloatWin') || g:TerslationFloatWin == 0
 		call s:viewToggle(l:transWord)
 	else
-		call s:transFloatWin(l:transWord)
+		execute a:type == 1 ? "call s:transFloatWin(l:transWord, 1)" : "call " .
+					\ "s:transFloatWin(l:transWord)"
 	endif
 	unlet l:transWord
 endfunction " }}}

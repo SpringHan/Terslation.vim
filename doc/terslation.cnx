@@ -1,6 +1,6 @@
 *terslation*						Vim下终端翻译器的交互界面
 
-版本: 1.0.1
+版本: 1.0.2
 作者: SpringHan <springchohaku@qq.com>
 证书: MIT
 
@@ -81,6 +81,9 @@ Terslation.vim是终端翻译器的Vim交互界面。你可以通过它来使Ter
 
 *:TerslationWordTrans*
 翻译光标下的单词。
+
+*:TerslationSelectTrans*
+翻译选中的文本。
 
 ==============================================================================
 vim:tw=80:nosta:noet:sw=4:ts=8:sts=0:ft=help:fen:fdm=marker

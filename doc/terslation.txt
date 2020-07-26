@@ -1,6 +1,6 @@
 *terslation*				Terminal Translator interface for vim.
 
-Version: 1.0.1
+Version: 1.0.2
 Author: SpringHan <springchohaku@qq.com>
 Lisence: MIT
 
@@ -83,6 +83,9 @@ Show or close the interface.
 
 *:TerslationWordTrans*
 Translate the word under the cursor.
+
+*:TerslationSelectTrans*
+Translate the selected text.
 
 ==============================================================================
 vim:tw=80:nosta:noet:sw=4:ts=8:sts=0:ft=help:fen:fdm=marker
